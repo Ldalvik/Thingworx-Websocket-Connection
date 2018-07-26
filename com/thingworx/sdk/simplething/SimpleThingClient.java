@@ -1,35 +1,49 @@
 package com.thingworx.sdk.simplething;
 
-import com.thingworx.metadata.PropertyDefinition;
+import com.thingworx.communications.client.things.VirtualThingPropertyChangeEvent;
+import com.thingworx.communications.client.things.VirtualThingPropertyChangeListener;
 import com.thingworx.types.BaseTypes;
-import com.thingworx.types.collections.AspectCollection;
-import com.thingworx.types.constants.Aspects;
 import com.thingworx.types.constants.DataChangeType;
-import com.thingworx.types.primitives.BooleanPrimitive;
-import com.thingworx.types.primitives.IntegerPrimitive;
-import com.thingworx.types.primitives.NumberPrimitive;
-import com.thingworx.types.primitives.StringPrimitive;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.thingworx.communications.client.ClientConfigurator;
-import com.thingworx.communications.client.ConnectedThingClient;
-import com.thingworx.communications.client.things.VirtualThing;
-
-public class SimpleThingClient {
+public class Main {
     public static void main(String[] args) throws Exception {
         BindProperties properties = new BindProperties();
+        String webSocketUrl = "ws://server-url.portal.ptc.io:80/Thingworx/WS";
+        String appKey = "app-key";
 
-        BindAspects aspects = new BindAspects()
+        BindAspects string = new BindAspects()
                 .setDataChangeType(DataChangeType.ALWAYS)
-                .setDefaultValue("default value")
+                .setDefaultValue("hello world!")
                 .setPushType(DataChangeType.ALWAYS);
-        properties.add("TestProp1", "Prop description", BaseTypes.STRING, aspects.getAspects());
-        properties.add("TestProp2", "Prop description", BaseTypes.STRING, aspects.getAspects());
-        properties.add("TestProp3", "Prop description", BaseTypes.STRING, aspects.getAspects());
 
-        SteamSensorClient.connect("ws://pp-1804271345f2.portal.ptc.io:80/Thingworx/WS",
-                "f76e9513-0bbc-4b33-af7f-09e5ea959504", "1", "TestThing", properties.getPropertyDefinition());
+        BindAspects bool = new BindAspects()
+                .setDataChangeType(DataChangeType.ALWAYS)
+                .setDefaultValue(false)
+                .setPushType(DataChangeType.ALWAYS);
+
+        BindAspects integer = new BindAspects()
+                .setDataChangeType(DataChangeType.ALWAYS)
+                .setDefaultValue(777)
+                .setPushType(DataChangeType.ALWAYS);
+
+        properties.add("StringProp", "String property", BaseTypes.STRING, string.getAspects());
+        properties.add("BooleanProp", "Boolean property", BaseTypes.BOOLEAN, bool.getAspects());
+        properties.add("IntegerProp", "Integer property", BaseTypes.INTEGER, integer.getAspects());
+
+        VirtualThingPropertyChangeListener onChangeListener = new VirtualThingPropertyChangeListener() {
+            @Override
+            public void propertyChangeEventReceived(VirtualThingPropertyChangeEvent evt) {
+                String changedProperty = evt.getPropertyDefinition().getName();
+                String newValue = evt.getPrimitiveValue().getValue();
+                
+                System.out.println();
+                System.out.println(String.format("%s:%s", changedProperty, newValue));
+                System.out.println();
+            }
+        };
+        ThingClient.connect(webSocketUrl, appKey,
+                "1", "TestThing", 250, properties.getPropertyDefinition(), onChangeListener);
     }
 
 }
+
