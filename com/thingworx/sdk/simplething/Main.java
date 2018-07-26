@@ -34,7 +34,7 @@ public class Main {
             @Override
             public void propertyChangeEventReceived(VirtualThingPropertyChangeEvent evt) {
                 String changedProperty = evt.getPropertyDefinition().getName();
-                String newValue = evt.getPrimitiveValue().getValue();
+                String newValue = evt.getPrimitiveValue().getValue().toString();
                 
                 System.out.println();
                 System.out.println(String.format("%s:%s", changedProperty, newValue));
