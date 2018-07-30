@@ -10,35 +10,34 @@ import com.thingworx.metadata.PropertyDefinition;
 import java.util.List;
 
 public class ThingClient extends ConnectedThingClient {
-    private ClientConfigurator config = new ClientConfigurator();
-    private ThingClient client;
-    private Thing thing = null;
+    private static ClientConfigurator config = new ClientConfigurator();
+    private static Thing thing;
 
-    public ThingClient(ClientConfigurator config) throws Exception {
+    public ThingClient(String id, String name, List<PropertyDefinition> property, VirtualThingPropertyChangeListener onChangeListener, ClientConfigurator config) throws Exception {
         super(config);
+        thing = new Thing(name + id, "Identifier: " + name + id, name + id, this, property);
+        thing.addPropertyChangeListener(onChangeListener);
+        config.setName(name);
+        this.bindThing(thing);
     }
+
 
     public static void main(String[] args) { }
 
-    public ThingClient config(String uri, String appKey, String id, String name, List<PropertyDefinition> property, VirtualThingPropertyChangeListener onChangeListener) throws Exception {
+    public static ClientConfigurator config(String uri, String appKey) {
         config.setUri(uri);
         config.setReconnectInterval(15);
         SecurityClaims claims = SecurityClaims.fromAppKey(appKey);
         config.setSecurityClaims(claims);
-        config.setName(name);
         config.setAsSDKType();
         config.ignoreSSLErrors(true);
-        client = new ThingClient(config);
-        thing = new Thing(name + id, "Identifier: " + name + id, name + id, client, property);
-        client.bindThing(thing);
-        thing.addPropertyChangeListener(onChangeListener);
-        return this;
+        return config;
     }
 
     public ThingClient connect(int scanRate) throws Exception {
-        client.start();
-        while (!client.isShutdown()) {
-            if (client.isConnected()) {
+        this.start();
+        while (!this.isShutdown()) {
+            if (this.isConnected()) {
                 thing.processScanRequest();
             }
             Thread.sleep(scanRate);
