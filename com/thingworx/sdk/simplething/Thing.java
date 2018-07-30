@@ -26,8 +26,6 @@ public class Thing extends VirtualThing implements Runnable {
     }
 
     public void scanDevice() {
-        //super.updateSubscribedProperties(15000);
-        //super.updateSubscribedEvents(60000);
     }
 
     @Override
