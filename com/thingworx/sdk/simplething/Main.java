@@ -1,5 +1,6 @@
 package com.thingworx.sdk.simplething;
 
+import com.thingworx.communications.client.ClientConfigurator;
 import com.thingworx.communications.client.things.VirtualThingPropertyChangeEvent;
 import com.thingworx.communications.client.things.VirtualThingPropertyChangeListener;
 import com.thingworx.types.BaseTypes;
@@ -8,8 +9,8 @@ import com.thingworx.types.constants.DataChangeType;
 public class Main {
     public static void main(String[] args) throws Exception {
         BindProperties properties = new BindProperties();
-        String webSocketUrl = "ws://web-server.portal.ptc.io:80/Thingworx/WS";
-        String appKey = "app-key";
+        String webSocketUrl = "ws://pp-1804271345f2.portal.ptc.io:80/Thingworx/WS";
+        String appKey = "f76e9513-0bbc-4b33-af7f-09e5ea959504";
 
         BindAspects string = new BindAspects()
                 .setDataChangeType(DataChangeType.ALWAYS)
@@ -41,9 +42,8 @@ public class Main {
                 System.out.println();
             }
         };
-
-       new ThingClient(null)
-        .config(webSocketUrl, appKey, "1", "TestThing", properties.getPropertyDefinition(), onChangeListener)
+        ClientConfigurator config = ThingClient.config(webSocketUrl, appKey);
+        new ThingClient("1", "TestThing", properties.getPropertyDefinition(), onChangeListener, config)
         .connect(250);
     }
 }
