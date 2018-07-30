@@ -8,7 +8,7 @@ import com.thingworx.types.constants.DataChangeType;
 public class Main {
     public static void main(String[] args) throws Exception {
         BindProperties properties = new BindProperties();
-        String webSocketUrl = "ws://server-url.portal.ptc.io:80/Thingworx/WS";
+        String webSocketUrl = "ws://web-server.portal.ptc.io:80/Thingworx/WS";
         String appKey = "app-key";
 
         BindAspects string = new BindAspects()
@@ -35,15 +35,15 @@ public class Main {
             public void propertyChangeEventReceived(VirtualThingPropertyChangeEvent evt) {
                 String changedProperty = evt.getPropertyDefinition().getName();
                 String newValue = evt.getPrimitiveValue().getValue().toString();
-                
+
                 System.out.println();
                 System.out.println(String.format("%s:%s", changedProperty, newValue));
                 System.out.println();
             }
         };
-        ThingClient.connect(webSocketUrl, appKey,
-                "1", "TestThing", 250, properties.getPropertyDefinition(), onChangeListener);
+
+       new ThingClient(null)
+        .config(webSocketUrl, appKey, "1", "TestThing", properties.getPropertyDefinition(), onChangeListener)
+        .connect(250);
     }
-
 }
-
