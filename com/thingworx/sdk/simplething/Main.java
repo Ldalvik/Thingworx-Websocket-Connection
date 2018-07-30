@@ -9,8 +9,8 @@ import com.thingworx.types.constants.DataChangeType;
 public class Main {
     public static void main(String[] args) throws Exception {
         BindProperties properties = new BindProperties();
-        String webSocketUrl = "ws://pp-1804271345f2.portal.ptc.io:80/Thingworx/WS";
-        String appKey = "f76e9513-0bbc-4b33-af7f-09e5ea959504";
+        String webSocketUrl = "ws://server-url.portal.ptc.io:80/Thingworx/WS";
+        String appKey = "appkey";
 
         BindAspects string = new BindAspects()
                 .setDataChangeType(DataChangeType.ALWAYS)
